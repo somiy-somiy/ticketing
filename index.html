@@ -10,7 +10,7 @@
     .container { width: 100%; max-width: 540px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.1), 0 8px 10px -6px rgba(56, 189, 248, 0.1); display: flex; flex-direction: column; position: relative; }
     
     .header-bar { background: linear-gradient(135deg, #7c3aed 0%, #38bdf8 100%); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; color: #ffffff; user-select: none; }
-    .header-logo { font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px; cursor: pointer; }
+    .header-logo { font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px; }
     .tag { background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(4px); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.4); }
     
     .page { display: none; padding: 22px 18px; flex-direction: column; }
@@ -31,6 +31,7 @@
     .btn-gradient:hover { opacity: 0.95; transform: translateY(-1px); }
     .btn-disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 
+    /* 대기열 */
     .queue-wrap { text-align: center; padding: 25px 0 10px; }
     .queue-spinner { width: 44px; height: 44px; border: 4px solid #e2e8f0; border-top: 4px solid #7c3aed; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -38,22 +39,30 @@
     .bar-bg { background: #f1f5f9; height: 10px; border-radius: 5px; overflow: hidden; margin: 16px 0; border: 1px solid #e2e8f0; }
     .bar-fill { background: linear-gradient(90deg, #7c3aed, #38bdf8); height: 100%; width: 0%; transition: width 0.1s; }
 
+    /* 보안문자 */
     .captcha-wrap { text-align: center; padding: 10px 0; }
     .captcha-img { background: #ede9fe; color: #6d28d9; letter-spacing: 6px; font-weight: 900; font-size: 1.8rem; font-family: monospace; padding: 14px; border-radius: 8px; user-select: none; text-align: center; margin-bottom: 14px; border: 1px dashed #c4b5fd; }
 
+    /* 무대 및 구역 구조 */
     .stage-box { background: linear-gradient(135deg, #ede9fe 0%, #e0f2fe 100%); color: #4338ca; border: 1px solid #c7d2fe; text-align: center; padding: 10px; font-weight: 800; border-radius: 6px; letter-spacing: 2px; margin-bottom: 6px; font-size: 0.85rem; }
     .stage-thrust-container { display: grid; grid-template-columns: 1fr 48px 1fr; gap: 6px; align-items: stretch; margin-bottom: 6px; }
     .runway-bridge { background: linear-gradient(180deg, #e0e7ff 0%, #ede9fe 100%); border: 1px dashed #a5b4fc; border-radius: 4px; display: flex; align-items: center; justify-content: center; writing-mode: vertical-lr; font-size: 0.68rem; font-weight: 800; color: #4338ca; letter-spacing: 2px; padding: 4px 0; }
-    .sub-stage-wide { background: linear-gradient(90deg, #e0e7ff 0%, #ede9fe 50%, #e0f2fe 100%); border: 1px solid #818cf8; border-radius: 6px; text-align: center; padding: 7px; font-size: 0.78rem; font-weight: 800; color: #4338ca; letter-spacing: 2px; margin-bottom: 8px; }
+    .sub-stage-wide { background: linear-gradient(90deg, #e0e7ff 0%, #ede9fe 50%, #e0f2fe 100%); border: 1px solid #818cf8; border-radius: 6px; text-align: center; padding: 8px; font-size: 0.8rem; font-weight: 800; color: #4338ca; letter-spacing: 2px; margin-bottom: 8px; }
 
     .section-group { margin-bottom: 14px; }
     .sec-title { font-size: 0.82rem; font-weight: 700; color: #64748b; margin-bottom: 6px; }
     .grid-j { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
     .grid-b { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-    .sec-btn { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 4px; color: #1e293b; cursor: pointer; text-align: center; transition: 0.15s; }
+    .sec-btn { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 4px; color: #1e293b; cursor: pointer; text-align: center; transition: 0.15s; }
     .sec-btn:hover { border-color: #7c3aed; background: #f5f3ff; color: #6d28d9; transform: translateY(-1px); }
-    .sec-name { font-size: 0.82rem; font-weight: bold; }
+    .sec-name { font-size: 0.88rem; font-weight: bold; }
 
+    /* 메인 화면용 미리보기 배치도 컨테이너 */
+    .preview-map-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 18px; }
+    .preview-map-box .sec-btn { cursor: default; background: #ffffff; padding: 9px 4px; }
+    .preview-map-box .sec-btn:hover { border-color: #e2e8f0; background: #ffffff; color: #1e293b; transform: none; }
+
+    /* 좌석 상세 */
     .seat-subbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .seat-legend { display: flex; gap: 10px; font-size: 0.75rem; margin-bottom: 8px; }
     .legend-item { display: flex; align-items: center; gap: 4px; color: #475569; }
@@ -100,7 +109,7 @@
 <body>
   <div class="container">
     <div class="header-bar">
-      <span class="header-logo" onclick="handleSecretTrigger()">TICKET ON</span>
+      <span class="header-logo">TICKET ON</span>
       <span class="tag">티켓 단독오픈</span>
     </div>
 
@@ -113,6 +122,39 @@
         <tr><td>좌석등급</td><td>VIP석 / J석 / B석</td></tr>
       </table>
 
+      <!-- 첫 인트로 화면 좌석배치도 조감도 -->
+      <label>공연장 좌석 배치도</label>
+      <div class="preview-map-box">
+        <div class="stage-box" style="padding:7px; font-size:0.8rem; margin-bottom:5px;">MAIN STAGE</div>
+        <div class="stage-thrust-container" style="margin-bottom:5px;">
+          <div class="sec-btn"><span class="sec-name">VIP 1</span></div>
+          <div class="runway-bridge">무대길</div>
+          <div class="sec-btn"><span class="sec-name">VIP 2</span></div>
+        </div>
+        <div class="sub-stage-wide" style="padding:6px; font-size:0.75rem; margin-bottom:5px;">◆ 돌출무대 ◆</div>
+        <div class="sec-btn" style="width:100%; margin-bottom:8px;"><span class="sec-name">VIP 3</span></div>
+        
+        <div style="font-size:0.75rem; color:#64748b; font-weight:700; margin-bottom:4px; text-align:left;">1층 J석</div>
+        <div class="grid-j" style="margin-bottom:8px;">
+          <div class="sec-btn"><span class="sec-name">J1</span></div>
+          <div class="sec-btn"><span class="sec-name">J2</span></div>
+          <div class="sec-btn"><span class="sec-name">J3</span></div>
+          <div class="sec-btn"><span class="sec-name">J4</span></div>
+        </div>
+
+        <div style="font-size:0.75rem; color:#64748b; font-weight:700; margin-bottom:4px; text-align:left;">2층 B석</div>
+        <div class="grid-b">
+          <div class="sec-btn"><span class="sec-name">B1</span></div>
+          <div class="sec-btn"><span class="sec-name">B2</span></div>
+          <div class="sec-btn"><span class="sec-name">B3</span></div>
+          <div class="sec-btn"><span class="sec-name">B4</span></div>
+          <div class="sec-btn"><span class="sec-name">B5</span></div>
+          <div class="sec-btn"><span class="sec-name">B6</span></div>
+          <div class="sec-btn"><span class="sec-name">B7</span></div>
+          <div class="sec-btn"><span class="sec-name">B8</span></div>
+        </div>
+      </div>
+
       <div class="notice-box">
         <strong>주의사항:</strong><br>
         공연 당일 현장 입장 전 본인 확인을 위해 <b>신분증 지참, 멤버십 확인, 페이스 인증</b> 등의 절차를 반드시 거칩니다. 실명과 신분증 정보가 다를 경우 입장이 제한됩니다.
@@ -121,6 +163,7 @@
       <label>예매자 실명 *</label>
       <input type="text" id="userName" placeholder="실명을 입력하세요" maxlength="10">
       
+      <!-- KST 18:00 정각 자동 오픈 버튼 -->
       <button id="mainBookingBtn" class="btn-main btn-disabled" disabled onclick="startBooking()">
         티켓 오픈 예정 (대기 중)
       </button>
@@ -160,11 +203,11 @@
 
       <div class="stage-thrust-container">
         <div class="sec-btn" onclick="openSeatDetail('VIP 1', 50)">
-          <span class="sec-name">VIP 1</span><br><span style="font-size:0.75rem; color:#64748b;">50석</span>
+          <span class="sec-name">VIP 1</span>
         </div>
         <div class="runway-bridge">무대길</div>
         <div class="sec-btn" onclick="openSeatDetail('VIP 2', 50)">
-          <span class="sec-name">VIP 2</span><br><span style="font-size:0.75rem; color:#64748b;">50석</span>
+          <span class="sec-name">VIP 2</span>
         </div>
       </div>
 
@@ -172,7 +215,7 @@
 
       <div class="section-group">
         <div class="sec-btn" style="width:100%; margin-bottom:14px;" onclick="openSeatDetail('VIP 3', 100)">
-          <span class="sec-name">VIP 3 (돌출 전면 와이드)</span><br><span style="font-size:0.75rem; color:#64748b;">100석</span>
+          <span class="sec-name">VIP 3</span>
         </div>
       </div>
 
@@ -276,9 +319,6 @@
     let totalWaitingPool = 21450;
     let totalWaitingTimer = null;
 
-    let secretClickCount = 0;
-    let secretClickTimeout = null;
-
     const allSections = [
       { sec: 'VIP 1', max: 50 }, { sec: 'VIP 2', max: 50 }, { sec: 'VIP 3', max: 100 },
       { sec: 'J1', max: 50 }, { sec: 'J2', max: 50 }, { sec: 'J3', max: 50 }, { sec: 'J4', max: 50 },
@@ -289,37 +329,24 @@
     const sectionCapacities = {};
     allSections.forEach(s => { sectionCapacities[s.sec] = s.max; });
 
+    // KST 기준 2026-11-04 18:00:00 (UTC+9)
     const TARGET_OPEN_TIME = new Date("2026-11-04T18:00:00+09:00").getTime();
     let isTicketOpened = false;
 
-    function handleSecretTrigger() {
-      secretClickCount++;
-      clearTimeout(secretClickTimeout);
-      secretClickTimeout = setTimeout(() => { secretClickCount = 0; }, 1200);
-
-      if (secretClickCount >= 3) {
-        isTicketOpened = true;
-        const btn = document.getElementById("mainBookingBtn");
-        btn.disabled = false;
-        btn.className = "btn-main btn-gradient";
-        btn.innerText = "예매하기 (테스트 즉시 오픈됨)";
-        alert("✨ 관리자 테스트 모드: 티켓 오픈이 즉시 활성화되었습니다!");
-      }
-    }
-
     function checkOpenTime() {
-      if (isTicketOpened) return;
-
       const now = Date.now();
       const diff = TARGET_OPEN_TIME - now;
       const btn = document.getElementById("mainBookingBtn");
 
       if (diff <= 0) {
-        isTicketOpened = true;
-        btn.disabled = false;
-        btn.className = "btn-main btn-gradient";
-        btn.innerText = "예매하기 (티켓오픈)";
+        if (!isTicketOpened) {
+          isTicketOpened = true;
+          btn.disabled = false;
+          btn.className = "btn-main btn-gradient";
+          btn.innerText = "예매하기 (티켓오픈)";
+        }
       } else {
+        isTicketOpened = false;
         btn.disabled = true;
         btn.className = "btn-main btn-disabled";
 
@@ -467,7 +494,7 @@
       currentTotalCount = totalCount;
       selectedSeatNumber = null;
       seatViewEntryTime = Date.now();
-      document.getElementById('currentSecTitle').innerText = `${secName} (${totalCount}석)`;
+      document.getElementById('currentSecTitle').innerText = `${secName}`;
       
       const btn = document.getElementById('bookBtn');
       btn.disabled = true;
@@ -562,7 +589,7 @@
     function openSeatModal() {
       const totalCount = sectionCapacities[currentSection] || 50;
       document.getElementById('modalTitle').innerText = `[${currentSection}] 구역 좌석배치도`;
-      document.getElementById('modalSecText').innerText = `${currentSection} 구역 (총 ${totalCount}석 중)`;
+      document.getElementById('modalSecText').innerText = `${currentSection} 구역`;
 
       const row = Math.ceil(selectedSeatNumber / 10);
       const col = ((selectedSeatNumber - 1) % 10) + 1;
@@ -667,7 +694,7 @@
 
       ctx.fillStyle = "#6d28d9";
       ctx.font = "bold 13px -apple-system, sans-serif";
-      ctx.fillText("* 본 티켓은 모바일 전용 입장권이며 신분증 대조 후 입장 가능합니다.", 300, 730);
+      ctx.fillText("* 본 티켓은 모바일 전용 입장권이며 현장에서 예매자의 티켓과 신분증 대조 후 입장 가능합니다.", 300, 730);
 
       const link = document.createElement('a');
       link.download = `티켓_${realName}_${currentSection}_${selectedSeatNumber}.png`;
