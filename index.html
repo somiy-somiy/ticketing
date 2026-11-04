@@ -10,7 +10,8 @@
     .container { width: 100%; max-width: 540px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.1), 0 8px 10px -6px rgba(56, 189, 248, 0.1); display: flex; flex-direction: column; position: relative; }
     
     /* 헤더 */
-    .header-bar { background: linear-gradient(135deg, #7c3aed 0%, #38bdf8 100%); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; color: #ffffff; }
+    .header-bar { background: linear-gradient(135deg, #7c3aed 0%, #38bdf8 100%); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; color: #ffffff; user-select: none; }
+    .header-logo { font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px; cursor: pointer; }
     .tag { background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(4px); color: #ffffff; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.4); }
     
     .page { display: none; padding: 22px 18px; flex-direction: column; }
@@ -29,6 +30,7 @@
     .btn-main { width: 100%; padding: 14px; border-radius: 8px; border: none; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
     .btn-gradient { background: linear-gradient(135deg, #7c3aed 0%, #38bdf8 100%); color: #ffffff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); }
     .btn-gradient:hover { opacity: 0.95; transform: translateY(-1px); }
+    .btn-disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
 
     /* 대기열 */
     .queue-wrap { text-align: center; padding: 25px 0 10px; }
@@ -63,11 +65,20 @@
     .seat-legend { display: flex; gap: 10px; font-size: 0.75rem; margin-bottom: 8px; }
     .legend-item { display: flex; align-items: center; gap: 4px; color: #475569; }
     .leg-box { width: 12px; height: 12px; border-radius: 3px; }
-    .seats-container { max-height: 320px; overflow-y: auto; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; }
+    .seats-container { max-height: 320px; overflow-y: auto; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; transition: transform 0.1s; }
     .seat { aspect-ratio: 1; border-radius: 4px; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 600; user-select: none; position: relative; }
     .seat.sold { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
     .seat.open { background: #38bdf8; color: #ffffff; box-shadow: 0 1px 3px rgba(56, 189, 248, 0.4); }
     .seat.selected { background: #7c3aed; color: #ffffff; outline: 2px solid #c4b5fd; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4); }
+
+    /* 이선좌 흔들림 애니메이션 */
+    .shake { animation: shakeAnim 0.3s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes shakeAnim {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(3px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
 
     /* 발권증 */
     .ticket-card { background: #ffffff; color: #0f172a; border-radius: 12px; padding: 22px; margin-top: 10px; border-left: 8px solid #7c3aed; border: 1px solid #e2e8f0; border-left-width: 8px; box-shadow: 0 8px 18px rgba(124, 58, 237, 0.08); }
@@ -99,7 +110,8 @@
 <body>
   <div class="container">
     <div class="header-bar">
-      <span style="font-weight:800; font-size:0.95rem; letter-spacing:0.5px;">TICKET ON</span>
+      <!-- 로고를 3번 연속 누르면 강제 오픈되는 히든 트리거 -->
+      <span class="header-logo" onclick="handleSecretTrigger()">TICKET ON</span>
       <span class="tag">티켓 단독오픈</span>
     </div>
 
@@ -117,9 +129,13 @@
         공연 당일 현장 입장 전 본인 확인을 위해 <b>신분증 지참, 멤버십 확인, 페이스 인증</b> 등의 절차를 반드시 거칩니다. 실명과 신분증 정보가 다를 경우 입장이 제한됩니다.
       </div>
 
-      <label>참여자 실명 *</label>
+      <label>예매자 실명 *</label>
       <input type="text" id="userName" placeholder="실명을 입력하세요" maxlength="10">
-      <button class="btn-main btn-gradient" onclick="startBooking()">예매하기</button>
+      
+      <!-- 18:00 오픈 타이머 연동 버튼 -->
+      <button id="mainBookingBtn" class="btn-main btn-disabled" disabled onclick="startBooking()">
+        티켓 오픈 예정 (대기 중)
+      </button>
     </div>
 
     <!-- 2. 대기열 화면 -->
@@ -128,8 +144,8 @@
         <div class="queue-spinner"></div>
         <div style="font-size:0.95rem; font-weight:700; color:#334155;">접속 대기 순서 안내</div>
         <div class="queue-count" id="queueNum">0</div>
-        <div style="font-size:0.85rem; color:#64748b;">
-          내 앞 대기자: <span id="remainCount" style="color:#7c3aed; font-weight:bold;">0</span>명
+        <div style="font-size:0.88rem; color:#64748b; margin-bottom: 4px;">
+          전체 대기자: <span id="totalWaitingCount" style="color:#ef4444; font-weight:bold;">24,180</span>명
         </div>
         <div class="bar-bg"><div class="bar-fill" id="queueBar"></div></div>
         <div style="font-size:0.85rem; color:#64748b; line-height:1.5;">
@@ -266,14 +282,78 @@
     let currentTotalCount = 50;
     let selectedSeatNumber = null;
     let openSeatsMap = {};
+    let fakeSeatsMap = {};
     let startTime = 0;
     let elapsedSeconds = "0.0";
+    let seatViewEntryTime = 0;
 
-    const sectionCapacities = {
-      'VIP 1': 50, 'VIP 2': 50, 'VIP 3': 100,
-      'J1': 50, 'J2': 50, 'J3': 50, 'J4': 50,
-      'B1': 30, 'B2': 30, 'B3': 30, 'B4': 30, 'B5': 30, 'B6': 30, 'B7': 30, 'B8': 30
-    };
+    let totalWaitingPool = 21450;
+    let totalWaitingTimer = null;
+
+    // 히든 테스트 트리거 카운트
+    let secretClickCount = 0;
+    let secretClickTimeout = null;
+
+    const allSections = [
+      { sec: 'VIP 1', max: 50 }, { sec: 'VIP 2', max: 50 }, { sec: 'VIP 3', max: 100 },
+      { sec: 'J1', max: 50 }, { sec: 'J2', max: 50 }, { sec: 'J3', max: 50 }, { sec: 'J4', max: 50 },
+      { sec: 'B1', max: 30 }, { sec: 'B2', max: 30 }, { sec: 'B3', max: 30 }, { sec: 'B4', max: 30 },
+      { sec: 'B5', max: 30 }, { sec: 'B6', max: 30 }, { sec: 'B7', max: 30 }, { sec: 'B8', max: 30 }
+    ];
+
+    const sectionCapacities = {};
+    allSections.forEach(s => { sectionCapacities[s.sec] = s.max; });
+
+    // KST 기준 2026-11-04 18:00:00 (UTC+9)
+    const TARGET_OPEN_TIME = new Date("2026-11-04T18:00:00+09:00").getTime();
+    let isTicketOpened = false;
+
+    // 상단 'TICKET ON' 로고 3번 연속 터치 시 즉시 오픈되는 히든 치트키
+    function handleSecretTrigger() {
+      secretClickCount++;
+      clearTimeout(secretClickTimeout);
+      secretClickTimeout = setTimeout(() => { secretClickCount = 0; }, 1200);
+
+      if (secretClickCount >= 3) {
+        isTicketOpened = true;
+        const btn = document.getElementById("mainBookingBtn");
+        btn.disabled = false;
+        btn.className = "btn-main btn-gradient";
+        btn.innerText = "예매하기 (테스트 즉시 오픈됨)";
+        alert("✨ 관리자 테스트 모드: 티켓 오픈이 즉시 활성화되었습니다!");
+      }
+    }
+
+    function checkOpenTime() {
+      if (isTicketOpened) return; // 이미 치트키나 시간으로 열렸으면 패스
+
+      const now = Date.now();
+      const diff = TARGET_OPEN_TIME - now;
+      const btn = document.getElementById("mainBookingBtn");
+
+      if (diff <= 0) {
+        isTicketOpened = true;
+        btn.disabled = false;
+        btn.className = "btn-main btn-gradient";
+        btn.innerText = "예매하기 (티켓오픈)";
+      } else {
+        btn.disabled = true;
+        btn.className = "btn-main btn-disabled";
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        let timeStr = "";
+        if (hours > 0) timeStr += `${hours}시간 `;
+        timeStr += `${minutes}분 ${seconds}초 남음`;
+
+        btn.innerText = `18:00 티켓 오픈 예정 (${timeStr})`;
+      }
+    }
+
+    setInterval(checkOpenTime, 1000);
+    checkOpenTime();
 
     function switchPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -282,6 +362,7 @@
 
     function setupAvailableSeats() {
       openSeatsMap = {};
+      fakeSeatsMap = {};
       
       const vipList = [
         { sec: 'VIP 1', max: 50 },
@@ -304,21 +385,35 @@
         if (!openSeatsMap[sec]) openSeatsMap[sec] = [];
         openSeatsMap[sec].push(Math.floor(Math.random() * 30) + 1);
       }
+
+      allSections.forEach(s => {
+        let fakeSeat;
+        const realList = openSeatsMap[s.sec] || [];
+        do {
+          fakeSeat = Math.floor(Math.random() * s.max) + 1;
+        } while (realList.includes(fakeSeat));
+        fakeSeatsMap[s.sec] = fakeSeat;
+      });
     }
 
     function startBooking() {
+      if (!isTicketOpened) {
+        alert("아직 티켓 오픈 시간이 아닙니다. 18:00 정각에 다시 시도해주세요!");
+        return;
+      }
+
       const nameInput = document.getElementById('userName').value.trim();
       if (!nameInput) {
-        alert("참여자 실명을 입력해주세요.");
+        alert("예매자 실명을 입력해주세요.");
         return;
       }
       realName = nameInput;
       setupAvailableSeats();
       startTime = Date.now();
 
-      // 1,000 ~ 20,000 대기열 랜덤 부여
       initialQueue = Math.floor(Math.random() * (20000 - 1000 + 1)) + 1000;
       currentQueue = initialQueue;
+      totalWaitingPool = Math.floor(Math.random() * 5000) + 20000;
       
       switchPage('page-queue');
       runQueue();
@@ -326,11 +421,12 @@
 
     function runQueue() {
       updateQueueUI();
-      // 500명당 1초 = 100ms마다 50명 차감
+
       queueTimer = setInterval(() => {
         currentQueue -= 50;
         if (currentQueue <= 0) {
           clearInterval(queueTimer);
+          clearInterval(totalWaitingTimer);
           currentQueue = 0;
           updateQueueUI();
           setTimeout(enterCaptcha, 350);
@@ -338,16 +434,22 @@
           updateQueueUI();
         }
       }, 100);
+
+      totalWaitingTimer = setInterval(() => {
+        if (totalWaitingPool < 39800) {
+          totalWaitingPool += Math.floor(Math.random() * 50) + 25;
+          document.getElementById('totalWaitingCount').innerText = totalWaitingPool.toLocaleString();
+        }
+      }, 100);
     }
 
     function updateQueueUI() {
       document.getElementById('queueNum').innerText = currentQueue.toLocaleString();
-      document.getElementById('remainCount').innerText = currentQueue.toLocaleString();
+      document.getElementById('totalWaitingCount').innerText = totalWaitingPool.toLocaleString();
       
       const progress = ((initialQueue - currentQueue) / initialQueue) * 100;
       document.getElementById('queueBar').style.width = `${progress}%`;
       
-      // 500명당 1초 기준 남은 시간 계산
       const secondsLeft = Math.ceil(currentQueue / 500);
       const min = Math.floor(secondsLeft / 60);
       const sec = secondsLeft % 60;
@@ -381,6 +483,7 @@
       currentSection = secName;
       currentTotalCount = totalCount;
       selectedSeatNumber = null;
+      seatViewEntryTime = Date.now();
       document.getElementById('currentSecTitle').innerText = `${secName} (${totalCount}석)`;
       
       const btn = document.getElementById('bookBtn');
@@ -392,27 +495,59 @@
       const grid = document.getElementById('seatsGrid');
       grid.innerHTML = "";
 
-      const openList = openSeatsMap[secName] || [];
+      const realOpenList = openSeatsMap[secName] || [];
+      const fakeSeatNum = fakeSeatsMap[secName];
 
       for (let i = 1; i <= totalCount; i++) {
         const seat = document.createElement('div');
-        const isOpen = openList.includes(i);
+        const isReal = realOpenList.includes(i);
+        const isFake = (i === fakeSeatNum);
+        const isOpen = isReal || isFake;
+
         seat.className = `seat ${isOpen ? 'open' : 'sold'}`;
         seat.innerText = i;
+        seat.id = `seat-elem-${i}`;
 
         if (isOpen) {
-          seat.onclick = () => {
-            document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
-            seat.classList.add('selected');
-            selectedSeatNumber = i;
-            btn.disabled = false;
-            btn.className = "btn-main btn-gradient";
-          };
+          seat.onclick = () => handleSeatClick(seat, i, isReal);
         }
         grid.appendChild(seat);
       }
 
       switchPage('page-seat');
+    }
+
+    function handleSeatClick(element, seatId, isReal) {
+      const grid = document.getElementById('seatsGrid');
+      const timeInPage = (Date.now() - seatViewEntryTime) / 1000;
+
+      if (!isReal || timeInPage > 3.2) {
+        grid.classList.add('shake');
+        setTimeout(() => grid.classList.remove('shake'), 350);
+
+        element.className = "seat sold";
+        element.onclick = null;
+
+        if (selectedSeatNumber === seatId) {
+          selectedSeatNumber = null;
+          const btn = document.getElementById('bookBtn');
+          btn.disabled = true;
+          btn.className = "btn-main";
+          btn.style.background = "#e2e8f0";
+          btn.style.color = "#94a3b8";
+        }
+
+        alert("이미 선택된 좌석입니다.\n(다른 고객이 먼저 결제/선점 중인 좌석입니다)");
+        return;
+      }
+
+      document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
+      element.classList.add('selected');
+      selectedSeatNumber = seatId;
+
+      const btn = document.getElementById('bookBtn');
+      btn.disabled = false;
+      btn.className = "btn-main btn-gradient";
     }
 
     function confirmBooking() {
