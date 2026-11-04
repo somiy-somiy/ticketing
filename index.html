@@ -110,7 +110,6 @@
 <body>
   <div class="container">
     <div class="header-bar">
-      <!-- 로고를 3번 연속 누르면 강제 오픈되는 히든 트리거 -->
       <span class="header-logo" onclick="handleSecretTrigger()">TICKET ON</span>
       <span class="tag">티켓 단독오픈</span>
     </div>
@@ -273,6 +272,9 @@
   <canvas id="ticketCanvas" style="display:none;"></canvas>
 
   <script>
+    // 주신 구글 웹 앱 URL이 정상적으로 연동되었습니다.
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbw4jskRUmW71-4coRRxSpHMXXWNtjeZiXl19b7EjZXrYDen0RSUGBP_Bs4GVF493K8/exec";
+
     let realName = "";
     let initialQueue = 0;
     let currentQueue = 0;
@@ -290,7 +292,6 @@
     let totalWaitingPool = 21450;
     let totalWaitingTimer = null;
 
-    // 히든 테스트 트리거 카운트
     let secretClickCount = 0;
     let secretClickTimeout = null;
 
@@ -308,7 +309,6 @@
     const TARGET_OPEN_TIME = new Date("2026-11-04T18:00:00+09:00").getTime();
     let isTicketOpened = false;
 
-    // 상단 'TICKET ON' 로고 3번 연속 터치 시 즉시 오픈되는 히든 치트키
     function handleSecretTrigger() {
       secretClickCount++;
       clearTimeout(secretClickTimeout);
@@ -325,7 +325,7 @@
     }
 
     function checkOpenTime() {
-      if (isTicketOpened) return; // 이미 치트키나 시간으로 열렸으면 패스
+      if (isTicketOpened) return;
 
       const now = Date.now();
       const diff = TARGET_OPEN_TIME - now;
@@ -553,12 +553,27 @@
     function confirmBooking() {
       if (!selectedSeatNumber) return;
       elapsedSeconds = ((Date.now() - startTime) / 1000).toFixed(1);
-      
+      const fullSeatName = `${currentSection} 구역 ${selectedSeatNumber}번`;
+
       document.getElementById('ticketName').innerText = realName;
-      document.getElementById('ticketSeat').innerText = `${currentSection} 구역 ${selectedSeatNumber}번`;
+      document.getElementById('ticketSeat').innerText = fullSeatName;
       document.getElementById('ticketTime').innerText = `${elapsedSeconds}초`;
 
       switchPage('page-success');
+
+      // 구글 스프레드시트로 성공 데이터 즉시 전송
+      if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL.startsWith("https://script.google.com")) {
+        fetch(GOOGLE_SHEET_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: realName,
+            seat: fullSeatName,
+            duration: elapsedSeconds
+          })
+        }).catch(err => console.log("기록 전송 에러:", err));
+      }
     }
 
     function openSeatModal() {
